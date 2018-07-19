@@ -1,8 +1,9 @@
 {
   "name": "cqrs-lite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "node cqrs infrastructure",
-  "main": "index.js",
+  "main": "dist/index",
+  "typings": "dist/index",
   "scripts": {
     "prepublishOnly": "npm run compile",
     "compile": "npm run clean && tsc -p .",
