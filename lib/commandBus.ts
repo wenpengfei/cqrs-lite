@@ -1,6 +1,7 @@
-import events = require('events')
-const WorkQueue = require('rabbitmq-broker')
 import { Message } from 'amqplib'
+import events = require('events')
+
+const { WorkQueue } = require('rabbitmq-broker')
 
 export default class CommandBus extends events.EventEmitter {
     private _workerQueue: any
