@@ -1,4 +1,5 @@
 import events = require('events')
+import { Message } from 'amqplib';
 const { PubSubQueue } = require('rabbitmq-broker')
 
 export default class EventBus extends events.EventEmitter {
@@ -18,7 +19,7 @@ export default class EventBus extends events.EventEmitter {
         throw 'connection is mandatory'
     }
 
-    async startListening(options: { exchangeName: string, routeKey: string }, onMessage) {
+    async startListening(options: { exchangeName: string, routeKey: string }, onMessage: (msg: Message | null) => any) {
         const { exchangeName, routeKey } = options
         if (this._pubSubQueue) {
             if (!exchangeName) {
