@@ -26,15 +26,9 @@ export default class CommandStore extends events.EventEmitter {
         let exceptVersion = 1
         if (latestCommand) {
             exceptVersion = latestCommand.version + 1
-            if (version !== exceptVersion) {
-                const message = `illegal command version, except ${exceptVersion} but ${version}`
-                throw new Error(message)
-            }
-        } else {
-            if (version !== exceptVersion) {
-                const message = `illegal command version, except ${exceptVersion} but ${version}`
-                throw new Error(message)
-            }
+        }
+        if (version !== exceptVersion) {
+            throw new Error(`illegal command version, except ${exceptVersion} but ${version}`)
         }
         return Command.create(command)
     }
