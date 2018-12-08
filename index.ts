@@ -5,6 +5,7 @@ import CreateEvent from './lib/createEvent'
 import DomainError from './lib/domainError'
 import EventBus from './lib/eventBus'
 import EventStore from './lib/eventStore'
+import EventExecutor from './lib/eventExecutor'
 
 export {
     CommandBus,
@@ -13,5 +14,6 @@ export {
     CreateEvent,
     DomainError,
     EventBus,
-    EventStore
+    EventStore,
+    EventExecutor
 }
