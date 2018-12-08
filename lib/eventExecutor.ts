@@ -10,22 +10,19 @@ export default class EventExecutor extends events.EventEmitter {
     private _routeKey: any
 
     async init(options: { eventBusUrl: string, exchangeName: string, routeKey: string }) {
-        const { eventBusUrl, exchangeName, routeKey } = options
+        const { eventBusUrl } = options
 
         const eventBus = new EventBus()
         await eventBus.connect(eventBusUrl)
         this._eventBus = eventBus
-
-        this._exchangeName = exchangeName
-        this._routeKey = routeKey
 
         this.emit('connected')
     }
 
     execute(eventName: string, executor: () => any) {
         this._eventBus.startListening({
-            exchangeName: this._exchangeName,
-            routeKey: this._routeKey
+            exchangeName: eventName,
+            routeKey: eventName
         }, (message: Message) => {
             const event = JSON.parse(message.content.toString())
             executor.call(this, event, message)
