@@ -16,6 +16,9 @@ export default class EventExecutor extends events.EventEmitter {
         await eventBus.connect(eventBusUrl)
         this._eventBus = eventBus
 
+        this._exchangeName = exchangeName
+        this._routeKey = routeKey
+
         this.emit('connected')
     }
 
