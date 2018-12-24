@@ -5,7 +5,7 @@ declare namespace cqrsLite {
         aggregateId: string,
         version: number,
         timestamp: string,
-        payload: object,
+        payload: any,
     }
 
     interface Event {
@@ -14,7 +14,7 @@ declare namespace cqrsLite {
         aggregateId: string,
         version: number,
         timestamp: string,
-        payload: object,
+        payload: any,
     }
 }
 export default cqrsLite
