@@ -1,4 +1,5 @@
 import events = require('events')
+import cqrsLite from '../types';
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
@@ -14,15 +15,15 @@ const commandSchema = new Schema({
 
 commandSchema.index({ aggregateId: 1, version: 1 }, { unique: true })
 
-const Command = mongoose.model('Command', commandSchema)
+const CommandEntity = mongoose.model('Command', commandSchema)
 
 export default class CommandStore extends events.EventEmitter {
     async connect(url = 'mongodb://localhost:27017/event-source') {
         return mongoose.connect(url, { useNewUrlParser: true })
     }
-    async saveCommand(command: any) {
+    async saveCommand(command: cqrsLite.Command) {
         const { aggregateId, version } = command
-        const [latestCommand] = await Command.find({ aggregateId }).sort({ version: -1 }).limit(1)
+        const [latestCommand] = await CommandEntity.find({ aggregateId }).sort({ version: -1 }).limit(1)
         let exceptVersion = 1
         if (latestCommand) {
             exceptVersion = latestCommand.version + 1
@@ -30,6 +31,6 @@ export default class CommandStore extends events.EventEmitter {
         if (version !== exceptVersion) {
             throw new Error(`illegal command version, except ${exceptVersion} but ${version}`)
         }
-        return Command.create(command)
+        return CommandEntity.create(command)
     }
 }

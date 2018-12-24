@@ -1,15 +1,14 @@
 import { Message } from 'amqplib';
 import events = require('events')
 import EventBus from './eventBus'
+import cqrsLite from "../types"
 
 const debug = require('debug')('eventExecutor')
 
 export default class EventExecutor extends events.EventEmitter {
     private _eventBus: any
-    private _exchangeName: any
-    private _routeKey: any
 
-    async init(options: { eventBusUrl: string, exchangeName: string, routeKey: string }) {
+    async init(options: { eventBusUrl: string}) {
         const { eventBusUrl } = options
 
         const eventBus = new EventBus()
@@ -19,7 +18,7 @@ export default class EventExecutor extends events.EventEmitter {
         this.emit('connected')
     }
 
-    execute(eventName: string, executor: () => any) {
+    execute(eventName: string, executor: (event: cqrsLite.Event, message: Message) => any) {
         this._eventBus.startListening({
             exchangeName: eventName,
             routeKey: eventName

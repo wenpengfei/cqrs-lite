@@ -1,4 +1,5 @@
 import events = require('events')
+import cqrsLite from "../types"
 const mongoose = require('mongoose')
 const R = require('ramda')
 
@@ -15,7 +16,7 @@ const eventSchema = new Schema({
 
 eventSchema.index({ aggregateId: 1, version: 1 }, { unique: true })
 
-const Event = mongoose.model('Event', eventSchema)
+const EventEntity = mongoose.model('Event', eventSchema)
 
 export default class EventStore extends events.EventEmitter {
 
@@ -24,10 +25,10 @@ export default class EventStore extends events.EventEmitter {
     }
 
     async getEventStream(aggregateId: string) {
-        return Event.find({ aggregateId }).sort({ timestamp: 1 })
+        return EventEntity.find({ aggregateId }).sort({ timestamp: 1 })
     }
 
-    async saveEventStream(events: Array<object>) {
-        return Event.collection.insert(events)
+    async saveEventStream(events: Array<cqrsLite.Event>) {
+        return EventEntity.collection.insert(events)
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "cqrs-lite",
-  "version": "1.0.8",
+  "version": "1.0.18",
   "description": "node cqrs infrastructure",
   "main": "dist/index",
   "typings": "dist/index",
@@ -24,7 +24,8 @@
   "files": [
     "dist/index.js",
     "dist/index.d.ts",
-    "dist/lib"
+    "dist/lib",
+    "dist/types/index.d.ts"
   ],
   "dependencies": {
     "@types/amqplib": "^0.5.8",

@@ -33,7 +33,7 @@ export default class EventBus extends events.EventEmitter {
         throw 'eventBus connection is mandatory'
     }
 
-    async connect(url: string) {
+    async connect(url?: string) {
         const pubSubQueue = new PubSubQueue()
         try {
             this.emit('connecting')

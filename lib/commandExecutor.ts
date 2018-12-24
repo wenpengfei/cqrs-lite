@@ -6,6 +6,7 @@ import EventBus from './eventBus'
 import EventStore from './eventStore'
 import CommandStore from './commandStore'
 import createEvent from './createEvent'
+import cqrsLite from '../types';
 
 const debug = require('debug')('commandExecutor')
 const R = require('ramda');
@@ -17,7 +18,7 @@ export default class CommandExecutor extends events.EventEmitter {
     private _eventStore: any
     private _commandStore: any
 
-    async init(options: { commandBusUrl: string, eventBusUrl: string, eventStoreUrl: string, commandStoreUrl: string  }) {
+    async init(options: { commandBusUrl: string, eventBusUrl: string, eventStoreUrl: string, commandStoreUrl: string }) {
 
         const { commandBusUrl, eventBusUrl, eventStoreUrl, commandStoreUrl } = options
 
@@ -40,7 +41,7 @@ export default class CommandExecutor extends events.EventEmitter {
         this.emit('connected')
     }
 
-    execute(commandName: string, executor: () => any) {
+    execute(commandName: string, executor: (command: cqrsLite.Command, message: Message) => any) {
         this._commandBus.startListening(commandName, async (message: Message) => {
             const command = JSON.parse(message.content.toString())
             try {
