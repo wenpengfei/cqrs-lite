@@ -34,9 +34,9 @@ export default class EventStore extends events.EventEmitter {
         return EventEntity.collection.insert(events)
     }
 
-    async processSuccess(eventId: string) {
+    async processSuccess(commandId: string) {
         return EventEntity.findOneAndUpdate({
-            eventId
+            commandId
         }, {
                 $set: { processStatus: 'success', processMessage: 'OK' },
             }, {
@@ -44,9 +44,9 @@ export default class EventStore extends events.EventEmitter {
             })
     }
 
-    async processError(eventId: string, processMessage: string) {
+    async processError(commandId: string, processMessage: string) {
         return EventEntity.findOneAndUpdate({
-            eventId
+            commandId
         }, {
                 $set: { processStatus: 'error', processMessage, version: -1 },
             }, {

@@ -43,21 +43,21 @@ export default class CommandExecutor extends events.EventEmitter {
 
     execute(commandName: string, executor: (command: cqrsLite.Command, message: Message) => any) {
         this._commandBus.startListening(commandName, async (message: Message) => {
-            const command = JSON.parse(message.content.toString())
+            const command: cqrsLite.Command = JSON.parse(message.content.toString())
             try {
                 await this._commandStore.saveCommand(command);
                 const domainEvent = executor.call(this, command, message)
-                const event = createEvent(command, domainEvent)
+                const event = await createEvent(command, domainEvent)
                 await this._eventStore.saveEventStream(event)
                 await this._eventBus.publish({
                     exchangeName: event.type,
                     routeKey: event.type,
                     message: R.dissoc('_id', event)
                 })
+                await this._commandStore.processSuccess(command.commandId)
                 this._commandBus.ack(message)
             } catch (error) {
-                debug(error.message)
-                console.error(error)
+                this._commandStore.processError(command.commandId, error.message)
                 if (error.message) {
                     if (error.message.indexOf('duplicate key error') !== -1) {
                         this._commandBus.ack(message)

@@ -23,6 +23,7 @@ export default class CommandStore extends events.EventEmitter {
     async connect(url = 'mongodb://localhost:27017/event-source') {
         return mongoose.connect(url, { useNewUrlParser: true })
     }
+    
     async saveCommand(command: cqrsLite.Command) {
         const { aggregateId, version } = command
         const [latestCommand] = await CommandEntity.find({ aggregateId }).sort({ version: -1 }).limit(1)
