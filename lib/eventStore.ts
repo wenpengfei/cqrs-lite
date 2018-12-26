@@ -12,6 +12,8 @@ const eventSchema = new Schema({
     timestamp: Date,
     type: String,
     payload: Object,
+    processStatus: { type: String, enum: ['pending', 'success', 'error'], default: 'pending' },
+    processMessage: String,
 }, { versionKey: false })
 
 eventSchema.index({ aggregateId: 1, version: 1 }, { unique: true })
@@ -30,5 +32,25 @@ export default class EventStore extends events.EventEmitter {
 
     async saveEventStream(events: Array<cqrsLite.Event>) {
         return EventEntity.collection.insert(events)
+    }
+
+    async processSuccess(eventId: string) {
+        return EventEntity.findOneAndUpdate({
+            eventId
+        }, {
+                $set: { processStatus: 'success', processMessage: 'OK' },
+            }, {
+                new: true,
+            })
+    }
+
+    async processError(eventId: string, processMessage: string) {
+        return EventEntity.findOneAndUpdate({
+            eventId
+        }, {
+                $set: { processStatus: 'error', processMessage, version: -1 },
+            }, {
+                new: true,
+            })
     }
 }

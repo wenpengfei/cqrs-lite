@@ -9,7 +9,7 @@ declare namespace cqrsLite {
     }
 
     interface Event {
-        name: string,
+        type: string,
         commandId: string,
         aggregateId: string,
         version: number,

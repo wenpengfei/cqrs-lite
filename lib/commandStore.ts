@@ -11,6 +11,8 @@ const commandSchema = new Schema({
     version: Number,
     timestamp: Date,
     payload: Object,
+    processStatus: { type: String, enum: ['pending', 'success', 'error'], default: 'pending' },
+    processMessage: String,
 }, { versionKey: false })
 
 commandSchema.index({ aggregateId: 1, version: 1 }, { unique: true })
@@ -32,5 +34,25 @@ export default class CommandStore extends events.EventEmitter {
             throw new Error(`illegal command version, except ${exceptVersion} but ${version}`)
         }
         return CommandEntity.create(command)
+    }
+
+    async processSuccess(commandId: string) {
+        return CommandEntity.findOneAndUpdate({
+            commandId
+        }, {
+                $set: { processStatus: 'success', processMessage: 'OK' },
+            }, {
+                new: true,
+            })
+    }
+
+    async processError(commandId: string, processMessage: string) {
+        return CommandEntity.findOneAndUpdate({
+            commandId
+        }, {
+                $set: { processStatus: 'error', processMessage, version: -1 },
+            }, {
+                new: true,
+            })
     }
 }
