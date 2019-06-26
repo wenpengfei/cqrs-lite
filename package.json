@@ -1,6 +1,6 @@
 {
   "name": "cqrs-lite",
-  "version": "1.0.20",
+  "version": "1.0.22",
   "description": "node cqrs infrastructure",
   "main": "dist/index",
   "typings": "dist/index",

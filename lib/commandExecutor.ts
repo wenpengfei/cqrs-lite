@@ -57,19 +57,20 @@ export default class CommandExecutor extends events.EventEmitter {
                 await this._commandStore.processSuccess(command.commandId)
                 this._commandBus.ack(message)
             } catch (error) {
-                this._commandStore.processError(command.commandId, error.message)
-                if (error.message) {
-                    if (error.message.indexOf('duplicate key error') !== -1) {
-                        this._commandBus.ack(message)
-                    }
-                    if (error.message.indexOf('illegal command version') !== -1) {
-                        this._commandBus.ack(message)
-                    }
-                }
-                if (error instanceof DomainError) {
-                    console.log(['CommandExecutor', 'DomainError'], error)
-                    this._commandBus.ack(message)
-                }
+                await this._commandStore.processError(command.commandId, error.message)
+                this._commandBus.ack(message)
+                // if (error.message) {
+                //     if (error.message.indexOf('duplicate key error') !== -1) {
+                //         this._commandBus.ack(message)
+                //     }
+                //     if (error.message.indexOf('illegal command version') !== -1) {
+                //         this._commandBus.ack(message)
+                //     }
+                // }
+                // if (error instanceof DomainError) {
+                //     console.log(['CommandExecutor', 'DomainError'], error)
+                //     this._commandBus.ack(message)
+                // }
             }
         })
     }
