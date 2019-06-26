@@ -26,7 +26,7 @@ export default class CommandStore extends events.EventEmitter {
     
     async saveCommand(command: cqrsLite.Command) {
         const { aggregateId, version } = command
-        const [latestCommand] = await CommandEntity.find({ aggregateId }).sort({ version: -1 }).limit(1)
+        const [latestCommand] = await CommandEntity.findOne({ aggregateId }).sort({ version: -1 })
         let exceptVersion = 1
         if (latestCommand) {
             exceptVersion = latestCommand.version + 1

@@ -9,28 +9,28 @@ export default class EventBus extends events.EventEmitter {
         const { message, exchangeName, routeKey } = options
         if (this._pubSubQueue) {
             if (!exchangeName) {
-                throw 'exchangeName is mandatory'
+                throw 'exchangeName is required'
             }
             if (!routeKey) {
-                throw 'routeKey is mandatory'
+                throw 'routeKey is required'
             }
             return this._pubSubQueue.publish(exchangeName, routeKey, JSON.stringify(message))
         }
-        throw 'connection is mandatory'
+        throw 'connection is required'
     }
 
     async startListening(options: { exchangeName: string, routeKey: string }, onMessage: (msg: Message | null) => any) {
         const { exchangeName, routeKey } = options
         if (this._pubSubQueue) {
             if (!exchangeName) {
-                throw 'exchangeName is mandatory'
+                throw 'exchangeName is required'
             }
             if (!routeKey) {
-                throw 'exchangeName is mandatory'
+                throw 'exchangeName is required'
             }
             return this._pubSubQueue.subscribe(exchangeName, routeKey, onMessage)
         }
-        throw 'eventBus connection is mandatory'
+        throw 'eventBus connection is required'
     }
 
     async connect(url?: string) {

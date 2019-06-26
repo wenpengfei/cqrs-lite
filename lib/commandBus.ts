@@ -10,21 +10,21 @@ export default class CommandBus extends events.EventEmitter {
     publish(queueName: string, command: cqrsLite.Command) {
         if (this._workerQueue) {
             if (!queueName) {
-                throw 'queueName is mandatory'
+                throw 'queueName is required'
             }
             return this._workerQueue.send(queueName, JSON.stringify(command))
         }
-        throw 'connection is mandatory'
+        throw 'connection is required'
     }
 
     async startListening(queueName: string, onMessage: (msg: Message | null) => any) {
         if (this._workerQueue) {
             if (!queueName) {
-                throw 'queueName is mandatory'
+                throw 'queueName is required'
             }
             return this._workerQueue.receive(queueName, onMessage)
         }
-        throw 'connection is mandatory'
+        throw 'connection is required'
     }
 
     async connect(url?: string) {
