@@ -9,7 +9,7 @@
   "include": [
     "test/**/*.ts",
     "lib/**/*.ts",
-    "types/**/*.ts",
+    "global.d.ts",
     "index.ts"
   ]
 }

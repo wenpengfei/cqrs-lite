@@ -1,48 +1,47 @@
 import events = require('events')
-import { Message } from 'amqplib';
+import { Message } from 'amqplib'
 const { PubSubQueue } = require('rabbitmq-broker')
 
 export default class EventBus extends events.EventEmitter {
-    _pubSubQueue: any
+  _pubSubQueue: any
 
-    async publish(options: { message: string, exchangeName: string, routeKey: string }) {
-        const { message, exchangeName, routeKey } = options
-        if (this._pubSubQueue) {
-            if (!exchangeName) {
-                throw 'exchangeName is required'
-            }
-            if (!routeKey) {
-                throw 'routeKey is required'
-            }
-            return this._pubSubQueue.publish(exchangeName, routeKey, JSON.stringify(message))
-        }
-        throw 'connection is required'
+  async publish(options: { message: Object; exchangeName: string; routeKey: string }) {
+    const { message, exchangeName, routeKey } = options
+    if (!this._pubSubQueue) {
+      throw new Error(`queue is not connected`)
     }
-
-    async startListening(options: { exchangeName: string, routeKey: string }, onMessage: (msg: Message | null) => any) {
-        const { exchangeName, routeKey } = options
-        if (this._pubSubQueue) {
-            if (!exchangeName) {
-                throw 'exchangeName is required'
-            }
-            if (!routeKey) {
-                throw 'exchangeName is required'
-            }
-            return this._pubSubQueue.subscribe(exchangeName, routeKey, onMessage)
-        }
-        throw 'eventBus connection is required'
+    if (!exchangeName) {
+      throw new Error(`exchangeName is required`)
     }
-
-    async connect(url?: string) {
-        const pubSubQueue = new PubSubQueue()
-        try {
-            this.emit('connecting')
-            await pubSubQueue.connect(url)
-            this._pubSubQueue = pubSubQueue
-            this.emit('connected')
-        } catch (error) {
-            this.emit('error')
-        }
+    if (!routeKey) {
+      throw new Error(`routeKey is required`)
     }
+    return this._pubSubQueue.publish(exchangeName, routeKey, JSON.stringify(message))
+  }
 
+  async startListening(options: { exchangeName: string; routeKey: string }, onMessage: (msg: Message | null) => any) {
+    const { exchangeName, routeKey } = options
+    if (!this._pubSubQueue) {
+      throw new Error(`queue is not connected`)
+    }
+    if (!exchangeName) {
+      throw new Error(`exchangeName is required`)
+    }
+    if (!routeKey) {
+      throw new Error(`routeKey is required`)
+    }
+    return this._pubSubQueue.subscribe(exchangeName, routeKey, onMessage)
+  }
+
+  async connect(url?: string) {
+    const pubSubQueue = new PubSubQueue()
+    try {
+      this.emit('connecting')
+      await pubSubQueue.connect(url)
+      this._pubSubQueue = pubSubQueue
+      this.emit('connected')
+    } catch (error) {
+      this.emit('error')
+    }
+  }
 }
